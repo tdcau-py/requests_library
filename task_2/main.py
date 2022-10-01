@@ -8,16 +8,20 @@ class YaUploader:
     def __init__(self, token: str):
         self.token = token
 
+    @property
+    def header(self):
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': f'OAuth {self.token}'
+        }
+
     def upload(self, file_path: str):
         """Метод загружает файлы по списку file_list на яндекс диск"""
         file_name = file_path.split('\\')[-1]
-        headers = {'Content-Type': 'application/json',
-                   'Authorization': f'OAuth {self.token}'}
-
         params = {'path': f'/{file_name}',
                   'overwrite': 'true', }
 
-        response = requests.get(self.URL_UPLOAD, params=params, headers=headers)
+        response = requests.get(self.URL_UPLOAD, params=params, headers=self.header)
         url_load = response.json().get('href')
         files = {'file': open(file_path, 'rb')}
 
