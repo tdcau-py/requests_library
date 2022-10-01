@@ -10,18 +10,18 @@ class PowerstatsHeroes:
 
     def _get_all_heroes(self) -> List[dict]:
         """Возвращает список данных обо всех супергероях"""
-        resp = requests.get(f'{self.URL}/all.json')
-        return resp.json()
+        response = requests.get(f'{self.URL}/all.json')
+        return response.json()
 
     def get_id_by_name(self) -> dict:
         """Осуществляет поиск id супергероя по имени"""
         heroes_id = {}
-        heroes = self._get_all_heroes()
+        all_heroes = self._get_all_heroes()
 
-        for name in self.names_heroes:
-            for hero in heroes:
-                if hero['name'] == name:
-                    heroes_id[name] = hero['id']
+        for hero_name in self.names_heroes:
+            for hero in all_heroes:
+                if hero['name'] == hero_name:
+                    heroes_id[hero_name] = hero['id']
 
         return heroes_id
 
@@ -31,8 +31,8 @@ class PowerstatsHeroes:
         heroes_powerstats = {}
 
         for name, id in heroes_id.items():
-            resp = requests.get(f'{self.URL}/powerstats/{id}.json')
-            heroes_powerstats[name] = resp.json()
+            response = requests.get(f'{self.URL}/powerstats/{id}.json')
+            heroes_powerstats[name] = response.json()
 
         return heroes_powerstats
 
@@ -44,10 +44,10 @@ def search_max_intelligence(heroes_names: list) -> str:
     high_intelligence = 0
     name_best_hero = ''
 
-    for k, v in heroes_stats.items():
-        if v['intelligence'] > high_intelligence:
-            name_best_hero = k
-            high_intelligence = v['intelligence']
+    for name, power_stats in heroes_stats.items():
+        if power_stats['intelligence'] > high_intelligence:
+            name_best_hero = name
+            high_intelligence = power_stats['intelligence']
 
     return name_best_hero
 
